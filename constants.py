@@ -1,0 +1,1 @@
+WFEN_MODEL_PATH = "models/wfen/WFEN.pth"
