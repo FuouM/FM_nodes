@@ -8,6 +8,8 @@ A collection of ComfyUI nodes. Including:
 
 ### WFEN
 
+Download the model [here](https://github.com/PRIS-CV/WFEN?tab=readme-ov-file#getting-started) and place it in `models/wfen/WFEN.pth`.
+
 [workflow_wfen_facecrop.json](workflow/workflow_wfen_facecrop.json)
 
 ![wfen_facecrop](workflow/wfen_facecrop.png)
