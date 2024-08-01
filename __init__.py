@@ -1,13 +1,14 @@
 from .run import (
-    WFEN,
+    WFEN, RealViFormerSR,
 )
 
 NODE_CLASS_MAPPINGS = {
-    "WFEN": WFEN
+    "WFEN": WFEN,
+    "RealViFormerSR": RealViFormerSR,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WFEN": "WFEN Face Restore"
+    "RealViFormerSR": "RealViFormer Video SR"
 }
 
 

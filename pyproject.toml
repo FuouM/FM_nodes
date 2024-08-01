@@ -1,7 +1,7 @@
 [project]
 name = "fm_nodes"
-description = "A collection of ComfyUI nodes. Including: WFEN Face Restore, Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network"
-version = "1.0.0"
+description = "A collection of ComfyUI nodes. Including: WFEN Face Restore, RealViFormer Video Super Resolution"
+version = "1.0.1"
 license = {file = "LICENSE"}
 dependencies = ["torch", "einops"]
 
