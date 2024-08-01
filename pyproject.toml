@@ -10,6 +10,6 @@ Repository = "https://github.com/FuouM/FM_nodes"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "fuoumarinas"
 DisplayName = "FM_nodes"
 Icon = ""
