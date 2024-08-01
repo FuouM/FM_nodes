@@ -6,10 +6,14 @@
 """
 
 from pathlib import Path
+import tqdm
 
 import torch
+import torch.nn.functional as F
+from comfy.utils import ProgressBar
 
-from .constants import WFEN_MODEL_PATH
+from .constants import REALVIFORMER_MODEL_PATH, WFEN_MODEL_PATH
+from .realviformer_module.realviformer_arch import RealViformer
 from .utils import ensure_size
 from .wfen_module.wfen_model import WFENModel
 
@@ -41,8 +45,91 @@ class WFEN:
         wfening.for_load_pretrain_model(f"{base_dir}/{WFEN_MODEL_PATH}")
 
         out_tensor = wfening.netG.forward(source_tensor)
-        # out_tensor = ensure_size(out_tensor, size=src_img.shape[1:3])
         print(f"{out_tensor.shape=}")
         out_tensor = out_tensor.permute(0, 2, 3, 1)
 
+        return (out_tensor,)
+
+
+def inference_realviformer(images: torch.Tensor, model: RealViformer) -> torch.Tensor:
+    padded = False
+    with torch.no_grad():
+        h, w = images.shape[-2:]
+        ah, aw = h % 4, w % 4
+        padh = 0 if ah == 0 else 4 - ah
+        padw = 0 if aw == 0 else 4 - aw
+        if padh != 0 or padw != 0:
+            padded = True
+            images = F.pad(
+                images.squeeze(0), pad=(padw, 0, padh, 0), mode="reflect"
+            ).unsqueeze(0)
+        outputs = model(images)
+
+    if padded:
+        outputs = outputs[..., padh * 4 :, padw * 4 :]
+
+    return outputs
+
+
+class RealViFormerSR:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_video": ("IMAGE",),
+                "interval": (
+                    "INT",
+                    {"default": 50, "min": 0, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("res_video",)
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(self, src_video: torch.Tensor, interval: int):
+        src_video = src_video.permute(0, 3, 1, 2)
+        print(f"{src_video.shape=}")
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = RealViformer(
+            num_feat=48,
+            num_blocks=[2, 3, 4, 1],
+            spynet_path=None,
+            heads=[1, 2, 4],
+            ffn_expansion_factor=2.66,
+            merge_head=2,
+            bias=False,
+            LayerNorm_type="BiasFree",
+            ch_compress=True,
+            squeeze_factor=[4, 4, 4],
+            masked=True,
+        )
+        model.load_state_dict(
+            torch.load(f"{base_dir}/{REALVIFORMER_MODEL_PATH}")["params"], strict=False
+        )
+        model.eval()
+        model = model.to(device)
+
+        if src_video.shape[0] <= interval:
+            out_tensor = inference_realviformer(
+                src_video.unsqueeze(0).to(device), model
+            )
+            out_tensor = out_tensor.squeeze(dim=0).permute(0, 2, 3, 1)
+            return (out_tensor,)
+
+        num_imgs = src_video.shape[0]
+        outputs: list[torch.Tensor] = []
+        pbar = ProgressBar(num_imgs)
+
+        for idx in tqdm.tqdm(range(0, num_imgs, interval)):
+            interval = min(interval, num_imgs - idx)
+            imgs = src_video[idx : idx + interval]
+            imgs = imgs.unsqueeze(0).to(device)  # [b, n, c, h, w]
+            outputs.append(inference_realviformer(imgs, model).squeeze(dim=0))
+            pbar.update_absolute(idx + interval, num_imgs)
+
+        out_tensor = torch.cat(outputs, dim=0).permute(0, 2, 3, 1)
         return (out_tensor,)
