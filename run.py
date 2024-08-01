@@ -12,9 +12,16 @@ import torch
 import torch.nn.functional as F
 from comfy.utils import ProgressBar
 
-from .constants import REALVIFORMER_MODEL_PATH, WFEN_MODEL_PATH
+from .propih_module.propih_model import VGG19HRNetModel
+
+from .constants import (
+    PROPIH_G_MODEL_PATH,
+    PROPIH_VGG_MODEL_PATH,
+    REALVIFORMER_MODEL_PATH,
+    WFEN_MODEL_PATH,
+)
 from .realviformer_module.realviformer_arch import RealViformer
-from .utils import ensure_size
+from .utils import ensure_size, img_to_mask
 from .wfen_module.wfen_model import WFENModel
 
 base_dir = Path(__file__).resolve().parent
@@ -133,3 +140,64 @@ class RealViFormerSR:
 
         out_tensor = torch.cat(outputs, dim=0).permute(0, 2, 3, 1)
         return (out_tensor,)
+
+
+class ProPIH_Harmonizer:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "composite": ("IMAGE",),
+                "background": ("IMAGE",),
+            },
+            "optional": {"foreground_mask": ("IMAGE",), "foreground_MASK": ("MASK",)},
+        }
+
+    RETURN_TYPES = (
+        "IMAGE",
+        "IMAGE",
+        "IMAGE",
+        "IMAGE",
+    )
+    RETURN_NAMES = (
+        "out_0",
+        "out_1",
+        "out_2",
+        "out_3",
+    )
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(
+        self,
+        composite: torch.Tensor,
+        background: torch.Tensor,
+        foreground_mask: torch.Tensor | None = None,
+        foreground_MASK: torch.Tensor | None = None,
+    ):
+        if foreground_mask is None and foreground_MASK is None:
+            raise ValueError("Please provide one mask image")
+
+        if foreground_MASK is not None:
+            mask = foreground_MASK.unsqueeze(dim=0)
+        else:
+            mask = img_to_mask(foreground_mask.permute(0, 3, 1, 2))
+
+        composite = composite.permute(0, 3, 1, 2)
+        background = background.permute(0, 3, 1, 2)
+
+        propih = VGG19HRNetModel(
+            vgg_path=f"{base_dir}/{PROPIH_VGG_MODEL_PATH}",
+            g_path=f"{base_dir}/{PROPIH_G_MODEL_PATH}",
+        )
+        outputs = propih.forward(comp=composite, style=background, mask=mask)
+        final_outputs = []
+        for ts in outputs:
+            final_outputs.append(ts.permute(0, 2, 3, 1))
+
+        return (
+            final_outputs[0],
+            final_outputs[1],
+            final_outputs[2],
+            final_outputs[3],
+        )
