@@ -1,0 +1,15 @@
+[project]
+name = "fm_nodes"
+description = "A collection of ComfyUI nodes. Including: WFEN Face Restore, Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network"
+version = "1.0.0"
+license = {file = "LICENSE"}
+dependencies = ["torch", "einops"]
+
+[project.urls]
+Repository = "https://github.com/FuouM/FM_nodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "fuoumarinas"
+DisplayName = "FM_nodes"
+Icon = ""
