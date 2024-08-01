@@ -23,3 +23,8 @@ Download the model [here](https://github.com/Yuehan717/RealViformer?tab=readme-o
 ![realviformer_example](example_realviformer.png)
 
 (Not a workflow-embedded image)
+
+https://github.com/user-attachments/assets/e89003c0-7be5-4263-b281-fd609807cea1
+
+RealViFormer upscale example
+
