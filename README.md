@@ -7,6 +7,7 @@ Click name to jump to workflow
 2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
+5. [**ST-AVSR**](#st-avsr). Paper: [Arbitrary-Scale Video Super-Resolution with Structural and Textural Priors](https://github.com/shangwei5/ST-AVSR)
    
 ## Workflows
 
@@ -52,3 +53,13 @@ No model needed to be downloaded. Lower `loss_mean` seems to result in brighter 
 [workflow_colie_lowlight.json](workflow/workflow_colie_lowlight.json)
 
 ![colie_lowlight](workflow/colie_lowlight.png)
+
+### ST-AVSR
+
+You will need to install [mmcv](https://github.com/open-mmlab/mmcv), which can be a real pain. Refer to https://mmcv.readthedocs.io/en/latest/get_started/installation.html. Cupy is also required. This is tested on:
+
+```
+mmcv==2.2.0
+torch=2.3.0+cu121
+cupy==13.2.0
+```

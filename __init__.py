@@ -9,6 +9,7 @@ NODE_CLASS_MAPPINGS = {
     "CoLIE_LowLight_Enhance": CoLIE_LowLight_Enhance,
 }
 
+
 NODE_DISPLAY_NAME_MAPPINGS = {
     "WFEN": "WFEN Face Restore",
     "RealViFormerSR": "RealViFormer Video SR",
@@ -16,5 +17,12 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CoLIE_LowLight_Enhance": "CoLIE LowLight Enhance",
 }
 
+try:
+    from .asvr_run import ASVR_VideoSR
+    NODE_CLASS_MAPPINGS["ASVR_VideoSR"] = ASVR_VideoSR
+    NODE_DISPLAY_NAME_MAPPINGS["ASVR_VideoSR"] = "ASVR Video SR"
+except ImportError as e:
+    print(f"Failed to load ASVR_VideoSR. This will not affect other nodes. {e}")
+    pass
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
