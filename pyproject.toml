@@ -1,7 +1,7 @@
 [project]
 name = "fm_nodes"
-description = "A collection of ComfyUI nodes. Including: WFEN, RealViFormer, ProPIH"
-version = "1.0.2"
+description = "An expanding collection of ComfyUI nodes focused on new papers. Including: WFEN, RealViFormer, ProPIH, CoLIE"
+version = "1.0.3"
 license = {file = "LICENSE"}
 dependencies = ["torch", "einops"]
 

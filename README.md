@@ -1,9 +1,12 @@
 # FM_nodes
 
-A collection of ComfyUI nodes. Including:
-1. WFEN Face Restore, [Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network](https://github.com/PRIS-CV/WFEN)
-2. [RealViformer](https://github.com/Yuehan717/RealViformer) - Investigating Attention for Real-World Video Super-Resolution
-3. [ProPIH](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization) Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles
+A collection of ComfyUI nodes.
+
+Click name to jump to workflow
+1. [**WFEN Face Restore**](#wfen). Paper: [Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network](https://github.com/PRIS-CV/WFEN)
+2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
+3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
+4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie/tree/main)
    
 ## Workflows
 
@@ -41,3 +44,11 @@ models/propih/latest_net_G.pth
 [workflow_propih.json](workflow/workflow_realviformer.json)
 
 ![propih](workflow/propih.png)
+
+### CoLIE
+
+No model needed to be downloaded. Lower `loss_mean` seems to result in brighter images. Node works with image and batched/video.
+
+[workflow_colie_lowlight.json](workflow/workflow_colie_lowlight.json)
+
+![colie_lowlight](workflow/colie_lowlight.png)
