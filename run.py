@@ -6,20 +6,20 @@
 """
 
 from pathlib import Path
-import tqdm
 
 import torch
 import torch.nn.functional as F
+import tqdm
 from comfy.utils import ProgressBar
 
-from .propih_module.propih_model import VGG19HRNetModel
-
+from .colie_module.colie_model import CoLIE_Config, run_colie
 from .constants import (
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
     WFEN_MODEL_PATH,
 )
+from .propih_module.propih_model import VGG19HRNetModel
 from .realviformer_module.realviformer_arch import RealViformer
 from .utils import ensure_size, img_to_mask
 from .wfen_module.wfen_model import WFENModel
@@ -201,3 +201,85 @@ class ProPIH_Harmonizer:
             final_outputs[2],
             final_outputs[3],
         )
+
+
+class CoLIE_LowLight_Enhance:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "down_res": (
+                    "INT",
+                    {"default": 256, "min": 1, "step": 1},
+                ),
+                "epochs": (
+                    "INT",
+                    {"default": 100, "min": 1, "step": 1},
+                ),
+                "cxt_window": (
+                    "INT",
+                    {"default": 1, "min": 1, "step": 1},
+                ),
+                "loss_mean": (
+                    "FLOAT",
+                    {"default": 0.3, "min": 0.01},
+                ),
+                "alpha": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.01},
+                ),
+                "beta": (
+                    "FLOAT",
+                    {"default": 20.0, "min": 0.01},
+                ),
+                "gamma": (
+                    "FLOAT",
+                    {"default": 8.0, "min": 0.01},
+                ),
+                "delta": (
+                    "FLOAT",
+                    {"default": 5.0, "min": 0.01},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("res_img",)
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        down_res: int,
+        epochs: int,
+        cxt_window: int,
+        loss_mean: float,
+        alpha: float,
+        beta: float,
+        gamma: float,
+        delta: float,
+    ):
+        result: list[torch.Tensor] = []
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+        for i in range(num_frames):
+            image = src_img[i].unsqueeze(0)
+            res_tensor = run_colie(
+                image,
+                CoLIE_Config(
+                    down_res=down_res,
+                    epochs=epochs,
+                    cxt_window=cxt_window,
+                    loss_mean=loss_mean,
+                    alpha=alpha,
+                    beta=beta,
+                    gamma=gamma,
+                    delta=delta,
+                ),
+            )
+            result.append(res_tensor)
+            pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)

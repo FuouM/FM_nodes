@@ -14,3 +14,4 @@ def img_to_mask(tensor: torch.Tensor):
     weights = weights.view(1, 3, 1, 1)
     grayscale = torch.sum(tensor * weights, dim=1, keepdim=True)
     return grayscale
+
