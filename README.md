@@ -75,3 +75,8 @@ To install, `pip install [].whl`
 [workflow_vfi_mamba.json](workflow/workflow_vfi_mamba.json)
 
 ![example_vfi_mamba](example_vfi_mamba.png)
+
+https://github.com/user-attachments/assets/be263cc3-a104-4262-899b-242e9802719e
+
+VFIMamba Example (top: Original, bottom: 5X, 20FPS)
+
