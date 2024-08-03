@@ -7,7 +7,8 @@ Click name to jump to workflow
 2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
-   
+5. [**AnySR**](#anysr). Paper: [Realizing Image Super-Resolution as Any-Scale, Any-Resource](https://github.com/CrispyFeSo4/AnySR)
+
 ## Workflows
 
 ### WFEN
@@ -52,3 +53,12 @@ No model needed to be downloaded. Lower `loss_mean` seems to result in brighter 
 [workflow_colie_lowlight.json](workflow/workflow_colie_lowlight.json)
 
 ![colie_lowlight](workflow/colie_lowlight.png)
+
+### AnySR
+
+Download `anysr_edsr_500.pth(updated)` and `anysr_rdn_500.pth(updated)` from [Checkpoints](https://github.com/CrispyFeSo4/AnySR?tab=readme-ov-file#checkpoints)
+
+```
+models/anysr/anysr_edsr_500.pth
+models/anysr/anysr_rdn_500.pth
+```

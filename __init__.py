@@ -1,5 +1,5 @@
 from .run import (
-    WFEN, RealViFormerSR, ProPIH_Harmonizer, CoLIE_LowLight_Enhance
+    WFEN, RealViFormerSR, ProPIH_Harmonizer, CoLIE_LowLight_Enhance, AnySR
 )
 
 NODE_CLASS_MAPPINGS = {
@@ -7,6 +7,7 @@ NODE_CLASS_MAPPINGS = {
     "RealViFormerSR": RealViFormerSR,
     "ProPIH_Harmonizer": ProPIH_Harmonizer,
     "CoLIE_LowLight_Enhance": CoLIE_LowLight_Enhance,
+    "AnySR": AnySR,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -14,6 +15,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "RealViFormerSR": "RealViFormer Video SR",
     "ProPIH_Harmonizer": "ProPIH Harmonizer",
     "CoLIE_LowLight_Enhance": "CoLIE LowLight Enhance",
+    "AnySR": "AnySR",
 }
 
 

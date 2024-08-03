@@ -12,8 +12,12 @@ import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
+from .anysr_module.anysr_model import run_anysr
 from .colie_module.colie_model import CoLIE_Config, run_colie
 from .constants import (
+    ANYSR_DEFAULT,
+    ANYSR_MODEL_PATHS,
+    ANYSR_MODELS,
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
@@ -278,6 +282,48 @@ class CoLIE_LowLight_Enhance:
                     gamma=gamma,
                     delta=delta,
                 ),
+            )
+            result.append(res_tensor)
+            pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
+
+
+class AnySR:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "scale": (
+                    "FLOAT",
+                    {"default": 2.00, "min": 0.01},
+                ),
+                "model": (ANYSR_MODELS, {"default": ANYSR_DEFAULT}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("res_img",)
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        scale: float,
+        model: str,
+    ):
+        result: list[torch.Tensor] = []
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+        for i in range(num_frames):
+            image = src_img[i].unsqueeze(0)
+            res_tensor = run_anysr(
+                image,
+                scale=scale,
+                model_arch=model,
+                model_path=f"{base_dir}/{ANYSR_MODEL_PATHS[model]}",
             )
             result.append(res_tensor)
             pbar.update_absolute(i, num_frames)
