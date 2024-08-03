@@ -76,6 +76,8 @@ To install, `pip install [].whl`
 
 ![example_vfi_mamba](example_vfi_mamba.png)
 
+(Not a workflow-embedded image)
+
 https://github.com/user-attachments/assets/be263cc3-a104-4262-899b-242e9802719e
 
 VFIMamba Example (top: Original, bottom: 5X, 20FPS)
