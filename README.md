@@ -7,7 +7,8 @@ Click name to jump to workflow
 2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
-   
+5. [**VFIMamba**](#vfimamba). Paper: [Video Frame Interpolation with State Space Models](https://github.com/MCG-NJU/VFIMamba)
+
 ## Workflows
 
 ### WFEN
@@ -52,3 +53,25 @@ No model needed to be downloaded. Lower `loss_mean` seems to result in brighter 
 [workflow_colie_lowlight.json](workflow/workflow_colie_lowlight.json)
 
 ![colie_lowlight](workflow/colie_lowlight.png)
+
+### VFIMamba
+
+Download the models from the [huggingface page](https://huggingface.co/MCG-NJU/VFIMamba/tree/main/ckpt)
+
+```
+models/vfimamba/VFIMamba_S.pkl
+models/vfimamba/VFIMamba.pkl
+```
+
+You will need to install `mamba-ssm`, which does not have a prebuilt Windows binary. You will need:
+1. [triton](https://github.com/triton-lang/triton). Prebuilt for `Python 3.10 and 3.11` can be found here: https://github.com/triton-lang/triton/issues/2881 - https://huggingface.co/madbuda/triton-windows-builds/tree/main
+2. [causal-conv1d](https://github.com/Dao-AILab/causal-conv1d). Follow this post: https://github.com/NVlabs/MambaVision/issues/14#issuecomment-2232581078
+3. [mamba-ssm](https://github.com/state-spaces/mamba). Follow this tutorial: https://blog.csdn.net/yyywxk/article/details/140420538. Fork that followed all the steps: https://github.com/FuouM/mamba-windows-build
+
+I've built `mamba-ssm` for `Python 3.11, torch 2.3.0+cu121`, which can be obtained here: https://huggingface.co/FuouM/mamba-ssm-windows-builds/tree/main
+
+To install, `pip install [].whl`
+
+[workflow_vfi_mamba.json](workflow/workflow_vfi_mamba.json)
+
+![example_vfi_mamba](example_vfi_mamba.png)
