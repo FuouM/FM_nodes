@@ -7,6 +7,7 @@ Click name to jump to workflow
 2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
+5. [**PCSR**](#pcsr). Paper: [Accelerating Image Super-Resolution Networks with Pixel-Level Classification](https://github.com/3587jjh/PCSR)
    
 ## Workflows
 
@@ -52,3 +53,24 @@ No model needed to be downloaded. Lower `loss_mean` seems to result in brighter 
 [workflow_colie_lowlight.json](workflow/workflow_colie_lowlight.json)
 
 ![colie_lowlight](workflow/colie_lowlight.png)
+
+### PCSR
+
+Download models from https://github.com/3587jjh/PCSR/tree/main/save
+```
+carn-pcsr-phase1/iter_last.pth
+fsrcnn-pcsr-phase1/iter_last.pth
+srresnet-pcsr-phase1/iter_last.pth
+```
+
+and place them here:
+```
+models/carn_pcsr/iter_last.pth
+models/fsrcnn_pcsr/iter_last.pth
+models/srresnet_pcsr/iter_last.pth
+```
+
+Install dependencies
+```
+pip install fast-pytorch-kmeans
+```

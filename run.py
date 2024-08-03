@@ -14,11 +14,15 @@ from comfy.utils import ProgressBar
 
 from .colie_module.colie_model import CoLIE_Config, run_colie
 from .constants import (
+    PCSR_DEFAULT,
+    PCSR_MODEL_PATHS,
+    PCSR_MODELS,
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
     WFEN_MODEL_PATH,
 )
+from .pcsr_module.pcsr_model import run_pcsr
 from .propih_module.propih_model import VGG19HRNetModel
 from .realviformer_module.realviformer_arch import RealViformer
 from .utils import ensure_size, img_to_mask
@@ -283,3 +287,82 @@ class CoLIE_LowLight_Enhance:
             pbar.update_absolute(i, num_frames)
 
         return (torch.cat(result, dim=0),)
+
+
+class PCSR_4X:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "model": (PCSR_MODELS, {"default": PCSR_DEFAULT}),
+                "scale": (
+                    "INT",
+                    {"default": 4, "min": 2, "step": 1},
+                ),
+                "k": (
+                    "FLOAT",
+                    {"default": 0.00, "min": 0.00},
+                ),
+                "pixel_batch_size": (
+                    "INT",
+                    {"default": 300000, "min": 1, "step": 1},
+                ),
+                "adaptive": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "no_refinement": (
+                    "BOOLEAN",
+                    {"default": True},
+                ),
+            },
+        }
+
+    RETURN_TYPES = (
+        "IMAGE",
+        "IMAGE",
+    )
+    RETURN_NAMES = (
+        "pred",
+        "flag",
+    )
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        model: str,
+        scale: int,
+        k: float,
+        pixel_batch_size: int,
+        adaptive: bool,
+        no_refinement: bool,
+    ):
+        result: list[torch.Tensor] = []
+        result_flags: list[torch.Tensor] = []
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+        for i in range(num_frames):
+            image = src_img[i].unsqueeze(0)
+            pred, flag = run_pcsr(
+                image,
+                model_path=f"{base_dir}/{PCSR_MODEL_PATHS[model]}",
+                scale=scale,
+                k=k,
+                pixel_batch_size=pixel_batch_size,
+                adaptive=adaptive,
+                no_refinement=no_refinement,
+            )
+            result.append(pred)
+            result_flags.append(flag)
+            pbar.update_absolute(i, num_frames)
+
+        pred_tensor = torch.cat(result, dim=0)
+        flag_tensor = torch.cat(result_flags, dim=0)
+
+        return (
+            pred_tensor,
+            flag_tensor,
+        )
