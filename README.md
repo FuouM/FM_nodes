@@ -8,6 +8,7 @@ Click name to jump to workflow
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
 5. [**VFIMamba**](#vfimamba). Paper: [Video Frame Interpolation with State Space Models](https://github.com/MCG-NJU/VFIMamba)
+6. [**ConvIR**](#convir) [Revitalizing Convolutional Network for Image Restoration](https://github.com/c-yn/ConvIR)
 
 ## Workflows
 
@@ -81,4 +82,6 @@ To install, `pip install [].whl`
 https://github.com/user-attachments/assets/be263cc3-a104-4262-899b-242e9802719e
 
 VFIMamba Example (top: Original, bottom: 5X, 20FPS)
+
+### ConvIR
 
