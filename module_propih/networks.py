@@ -215,7 +215,8 @@ def get_norm_layer(norm_type="instance"):
             nn.InstanceNorm2d, affine=False, track_running_stats=False
         )
     elif norm_type == "none":
-        norm_layer = lambda x: Identity()
+        def norm_layer(x):
+            return Identity()
     # elif norm_type.startswith('rain'):
     #     norm_layer = RAIN
     else:
