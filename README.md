@@ -3,11 +3,12 @@
 A collection of ComfyUI nodes.
 
 Click name to jump to workflow
-1. [**WFEN Face Restore**](#wfen). Paper: [Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network](https://github.com/PRIS-CV/WFEN)
+1. [**WFEN**](#wfen) Face Restore. Paper: [Efficient Face Super-Resolution via Wavelet-based Feature Enhancement Network](https://github.com/PRIS-CV/WFEN)
 2. [**RealViformer**](#realviformer) - Paper: [Investigating Attention for Real-World Video Super-Resolution](https://github.com/Yuehan717/RealViformer)
 3. [**ProPIH**](#propih). Paper: [Progressive Painterly Image Harmonization from Low-level Styles to High-level Styles](https://github.com/bcmi/ProPIH-Painterly-Image-Harmonization)
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
 5. [**VFIMamba**](#vfimamba). Paper: [Video Frame Interpolation with State Space Models](https://github.com/MCG-NJU/VFIMamba)
+6. [**ConvIR**](#convir). Paper: [Revitalizing Convolutional Network for Image Restoration](https://github.com/c-yn/ConvIR)
 
 ## Workflows
 
@@ -82,3 +83,99 @@ https://github.com/user-attachments/assets/be263cc3-a104-4262-899b-242e9802719e
 
 VFIMamba Example (top: Original, bottom: 5X, 20FPS)
 
+### ConvIR
+
+Download models in the [Pretrained models - gdrive](https://github.com/c-yn/ConvIR?tab=readme-ov-file#pretrained-models) section
+
+[workflow_convir.json](workflow/workflow_convir.json)
+
+![convir](workflow/convir.png)
+
+```
+models\convir
+│ deraining.pkl
+│
+├─defocus
+│   dpdd-base.pkl
+│   dpdd-large.pkl
+│   dpdd-small.pkl
+│
+├─dehaze
+│   densehaze-base.pkl
+│   densehaze-small.pkl
+│   gta5-base.pkl
+│   gta5-small.pkl
+│   haze4k-base.pkl
+│   haze4k-large.pkl
+│   haze4k-small.pkl
+│   ihaze-base.pkl
+│   ihaze-small.pkl
+│   its-base.pkl
+│   its-small.pkl
+│   nhhaze-base.pkl
+│   nhhaze-small.pkl
+│   nhr-base.pkl
+│   nhr-small.pkl
+│   ohaze-base.pkl
+│   ohaze-small.pkl
+│   ots-base.pkl
+│   ots-small.pkl
+│
+├─desnow
+│   csd-base.pkl
+│   csd-small.pkl
+│   snow100k-base.pkl
+│   snow100k-small.pkl
+│   srrs-base.pkl
+│   srrs-small.pkl
+│
+└─modeblur
+    convir_gopro.pkl
+    convir_rsblur.pkl
+```
+
+
+## Credits
+
+```
+@misc{chobola2024fast,
+      title={Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations}, 
+      author={Tomáš Chobola and Yu Liu and Hanyi Zhang and Julia A. Schnabel and Tingying Peng},
+      year={2024},
+      eprint={2407.12511},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2407.12511}, 
+}
+```
+
+```
+@misc{zhang2024vfimambavideoframeinterpolation,
+      title={VFIMamba: Video Frame Interpolation with State Space Models}, 
+      author={Guozhen Zhang and Chunxu Liu and Yutao Cui and Xiaotong Zhao and Kai Ma and Limin Wang},
+      year={2024},
+      eprint={2407.02315},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2407.02315}, 
+}
+```
+
+```
+@article{cui2024revitalizing,
+  title={Revitalizing Convolutional Network for Image Restoration},
+  author={Cui, Yuning and Ren, Wenqi and Cao, Xiaochun and Knoll, Alois},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2024},
+  publisher={IEEE}
+}
+
+@inproceedings{cui2023irnext,
+  title={IRNeXt: Rethinking Convolutional Network Design for Image Restoration},
+  author={Cui, Yuning and Ren, Wenqi and Yang, Sining and Cao, Xiaochun and Knoll, Alois},
+  booktitle={International Conference on Machine Learning},
+  pages={6545--6564},
+  year={2023},
+  organization={PMLR}
+}
+```

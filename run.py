@@ -12,17 +12,17 @@ import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
-from .colie_module.colie_model import CoLIE_Config, run_colie
+from .module_colie.colie_model import CoLIE_Config, run_colie
 from .constants import (
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
     WFEN_MODEL_PATH,
 )
-from .propih_module.propih_model import VGG19HRNetModel
-from .realviformer_module.realviformer_arch import RealViformer
+from .module_propih.propih_model import VGG19HRNetModel
+from .module_realviformer.realviformer_arch import RealViformer
 from .utils import ensure_size, img_to_mask
-from .wfen_module.wfen_model import WFENModel
+from .module_wfen.wfen_model import WFENModel
 
 base_dir = Path(__file__).resolve().parent
 

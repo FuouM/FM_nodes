@@ -15,7 +15,7 @@ class VGG19HRNetModel:
         self.netG = nn.DataParallel(self.netG)
         state_dict = torch.load(g_path, map_location=str(self.device))
         self.netG.module.load_state_dict(state_dict, strict=True)
-        
+
     def forward(self, comp, style, mask):
         """Employ generator to generate the output, and calculate the losses for generator"""
 

@@ -1,0 +1,573 @@
+{
+  "last_node_id": 16,
+  "last_link_id": 59,
+  "nodes": [
+    {
+      "id": 12,
+      "type": "Reroute",
+      "pos": [
+        330,
+        -43
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            31,
+            32,
+            33,
+            40,
+            41
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [
+        -54,
+        155
+      ],
+      "size": {
+        "0": 422.6976623535156,
+        "1": 339.1871643066406
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            30,
+            43
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "cat.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "Reroute",
+      "pos": [
+        491,
+        447
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 43
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            44
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 4,
+      "type": "Image Comparer (rgthree)",
+      "pos": {
+        "0": 1081,
+        "1": 228,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0
+      },
+      "size": {
+        "0": 516.6257934570312,
+        "1": 345.0682067871094
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image_a",
+          "type": "IMAGE",
+          "link": 26,
+          "dir": 3
+        },
+        {
+          "name": "image_b",
+          "type": "IMAGE",
+          "link": 45,
+          "dir": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "comparer_mode": "Slide"
+      },
+      "widgets_values": [
+        [
+          {
+            "name": "A",
+            "selected": true,
+            "url": "/view?filename=rgthree.compare._temp_ekoah_00015_.png&type=temp&subfolder=&rand=0.05077056793140655"
+          },
+          {
+            "name": "B",
+            "selected": true,
+            "url": "/view?filename=rgthree.compare._temp_ekoah_00016_.png&type=temp&subfolder=&rand=0.8029056834303627"
+          }
+        ]
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Reroute",
+      "pos": [
+        865,
+        114
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 59
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            26,
+            54
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 9,
+      "type": "ConvIR_DeRain",
+      "pos": [
+        591,
+        -16
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "res_img",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConvIR_DeRain"
+      }
+    },
+    {
+      "id": 11,
+      "type": "ConvIR_DeSnow",
+      "pos": [
+        498,
+        78
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 33
+        }
+      ],
+      "outputs": [
+        {
+          "name": "res_img",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConvIR_DeSnow"
+      },
+      "widgets_values": [
+        "snow100k",
+        "base"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "ConvIR_MotionDeBlur",
+      "pos": [
+        490,
+        227
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 41
+        }
+      ],
+      "outputs": [
+        {
+          "name": "res_img",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConvIR_MotionDeBlur"
+      },
+      "widgets_values": [
+        "gopro"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "ConvIR_DefocusDeblur",
+      "pos": [
+        487,
+        352
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 40
+        }
+      ],
+      "outputs": [
+        {
+          "name": "res_img",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConvIR_DefocusDeblur"
+      },
+      "widgets_values": [
+        "base"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "ConvIR_DeHaze",
+      "pos": [
+        501,
+        -153
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 31,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "res_img",
+          "type": "IMAGE",
+          "links": [
+            59
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConvIR_DeHaze"
+      },
+      "widgets_values": [
+        "haze4k",
+        "base"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SaveImage",
+      "pos": [
+        1083,
+        -171
+      ],
+      "size": {
+        "0": 517.8594970703125,
+        "1": 340.2516784667969
+      },
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 54
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ConvIR"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "Reroute",
+      "pos": [
+        842,
+        448
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 44
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            45
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    }
+  ],
+  "links": [
+    [
+      26,
+      10,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      30,
+      2,
+      0,
+      12,
+      0,
+      "*"
+    ],
+    [
+      31,
+      12,
+      0,
+      1,
+      0,
+      "IMAGE"
+    ],
+    [
+      32,
+      12,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      33,
+      12,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      40,
+      12,
+      0,
+      15,
+      0,
+      "IMAGE"
+    ],
+    [
+      41,
+      12,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      43,
+      2,
+      0,
+      13,
+      0,
+      "*"
+    ],
+    [
+      44,
+      13,
+      0,
+      16,
+      0,
+      "*"
+    ],
+    [
+      45,
+      16,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      54,
+      10,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      59,
+      1,
+      0,
+      10,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        -140,
+        227
+      ]
+    }
+  },
+  "version": 0.4
+}

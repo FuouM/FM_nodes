@@ -228,7 +228,8 @@ class MultiScaleFlow(nn.Module):
                 flow_d, mask_d = self.block[i](
                     torch.cat([af[-1 - i][:B], af[-1 - i][B:]], 1),
                     torch.cat(
-                        (img0, img1, warped_img0, warped_img1, mask, timestep), 1  # noqa: F821
+                        (img0, img1, warped_img0, warped_img1, mask, timestep),  # noqa: F821
+                        1,  # noqa: F821
                     ),
                     flow,
                 )

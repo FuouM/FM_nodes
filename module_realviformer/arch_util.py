@@ -1,18 +1,18 @@
 import collections.abc
 import math
-import torch
+import numbers
 import warnings
 from itertools import repeat
+
+import torch
+from einops import rearrange
 from torch import nn as nn
 from torch.nn import functional as F
 from torch.nn import init as init
 from torch.nn.modules.batchnorm import _BatchNorm
 
-from einops import rearrange
-import numbers
 
-
-@torch.no_grad() # @ is a decorator, which takes the decorated function as the argument of the function after @
+@torch.no_grad()  # @ is a decorator, which takes the decorated function as the argument of the function after @
 def default_init_weights(module_list, scale=1, bias_fill=0, **kwargs):
     """Initialize network weights.
 
@@ -108,11 +108,15 @@ class Upsample(nn.Sequential):
             m.append(nn.Conv2d(num_feat, 9 * num_feat, 3, 1, 1))
             m.append(nn.PixelShuffle(3))
         else:
-            raise ValueError(f'scale {scale} is not supported. Supported scales: 2^n and 3.')
+            raise ValueError(
+                f"scale {scale} is not supported. Supported scales: 2^n and 3."
+            )
         super(Upsample, self).__init__(*m)
 
 
-def flow_warp(x, flow, interp_mode='bilinear', padding_mode='zeros', align_corners=True):
+def flow_warp(
+    x, flow, interp_mode="bilinear", padding_mode="zeros", align_corners=True
+):
     """Warp an image or feature map with optical flow.
 
     Args:
@@ -131,22 +135,32 @@ def flow_warp(x, flow, interp_mode='bilinear', padding_mode='zeros', align_corne
     assert x.size()[-2:] == flow.size()[1:3]
     _, _, h, w = x.size()
     # create mesh grid
-    grid_y, grid_x = torch.meshgrid(torch.arange(0, h).type_as(x), torch.arange(0, w).type_as(x))
-    grid = torch.stack((grid_x, grid_y), 2).float()  # W(x), H(y), 2 current position 
+    grid_y, grid_x = torch.meshgrid(
+        torch.arange(0, h).type_as(x), torch.arange(0, w).type_as(x)
+    )
+    grid = torch.stack((grid_x, grid_y), 2).float()  # W(x), H(y), 2 current position
     grid.requires_grad = False
 
-    vgrid = grid + flow # for all n batches do the same  current position --> warped position
+    vgrid = (
+        grid + flow
+    )  # for all n batches do the same  current position --> warped position
     # scale grid to [-1,1]
     vgrid_x = 2.0 * vgrid[:, :, :, 0] / max(w - 1, 1) - 1.0
     vgrid_y = 2.0 * vgrid[:, :, :, 1] / max(h - 1, 1) - 1.0
     vgrid_scaled = torch.stack((vgrid_x, vgrid_y), dim=3)
-    output = F.grid_sample(x, vgrid_scaled, mode=interp_mode, padding_mode=padding_mode, align_corners=align_corners)
+    output = F.grid_sample(
+        x,
+        vgrid_scaled,
+        mode=interp_mode,
+        padding_mode=padding_mode,
+        align_corners=align_corners,
+    )
 
     # TODO, what if align_corners=False
     return output
 
 
-def resize_flow(flow, size_type, sizes, interp_mode='bilinear', align_corners=False):
+def resize_flow(flow, size_type, sizes, interp_mode="bilinear", align_corners=False):
     """Resize a flow according to ratio or shape.
 
     Args:
@@ -167,12 +181,14 @@ def resize_flow(flow, size_type, sizes, interp_mode='bilinear', align_corners=Fa
         Tensor: Resized flow.
     """
     _, _, flow_h, flow_w = flow.size()
-    if size_type == 'ratio':
+    if size_type == "ratio":
         output_h, output_w = int(flow_h * sizes[0]), int(flow_w * sizes[1])
-    elif size_type == 'shape':
+    elif size_type == "shape":
         output_h, output_w = sizes[0], sizes[1]
     else:
-        raise ValueError(f'Size type should be ratio or shape, but got type {size_type}.')
+        raise ValueError(
+            f"Size type should be ratio or shape, but got type {size_type}."
+        )
 
     input_flow = flow.clone()
     ratio_h = output_h / flow_h
@@ -180,13 +196,14 @@ def resize_flow(flow, size_type, sizes, interp_mode='bilinear', align_corners=Fa
     input_flow[:, 0, :, :] *= ratio_w
     input_flow[:, 1, :, :] *= ratio_h
     resized_flow = F.interpolate(
-        input=input_flow, size=(output_h, output_w), mode=interp_mode) #, align_corners=align_corners)
+        input=input_flow, size=(output_h, output_w), mode=interp_mode
+    )  # , align_corners=align_corners)
     return resized_flow
 
 
 # TODO: may write a cpp file
 def pixel_unshuffle(x, scale):
-    """ Pixel unshuffle.
+    """Pixel unshuffle.
 
     Args:
         x (Tensor): Input feature with shape (b, c, hh, hw).
@@ -204,20 +221,20 @@ def pixel_unshuffle(x, scale):
     return x_view.permute(0, 1, 3, 5, 2, 4).reshape(b, out_channel, h, w)
 
 
-
 def _no_grad_trunc_normal_(tensor, mean, std, a, b):
     # From: https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/layers/weight_init.py
     # Cut & paste from PyTorch official master until it's in a few official releases - RW
     # Method based on https://people.sc.fsu.edu/~jburkardt/presentations/truncated_normal.pdf
     def norm_cdf(x):
         # Computes standard normal cumulative distribution function
-        return (1. + math.erf(x / math.sqrt(2.))) / 2.
+        return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
 
     if (mean < a - 2 * std) or (mean > b + 2 * std):
         warnings.warn(
-            'mean is more than 2 std from [a, b] in nn.init.trunc_normal_. '
-            'The distribution of values may be incorrect.',
-            stacklevel=2)
+            "mean is more than 2 std from [a, b] in nn.init.trunc_normal_. "
+            "The distribution of values may be incorrect.",
+            stacklevel=2,
+        )
 
     with torch.no_grad():
         # Values are generated by using a truncated uniform distribution and
@@ -235,7 +252,7 @@ def _no_grad_trunc_normal_(tensor, mean, std, a, b):
         tensor.erfinv_()
 
         # Transform to proper mean, std
-        tensor.mul_(std * math.sqrt(2.))
+        tensor.mul_(std * math.sqrt(2.0))
         tensor.add_(mean)
 
         # Clamp to ensure it's in the proper range
@@ -243,7 +260,7 @@ def _no_grad_trunc_normal_(tensor, mean, std, a, b):
         return tensor
 
 
-def trunc_normal_(tensor, mean=0., std=1., a=-2., b=2.):
+def trunc_normal_(tensor, mean=0.0, std=1.0, a=-2.0, b=2.0):
     r"""Fills the input Tensor with values drawn from a truncated
     normal distribution.
 
@@ -271,7 +288,6 @@ def trunc_normal_(tensor, mean=0., std=1., a=-2., b=2.):
 
 # From PyTorch
 def _ntuple(n):
-
     def parse(x):
         if isinstance(x, collections.abc.Iterable):
             return x
@@ -286,6 +302,7 @@ to_3tuple = _ntuple(3)
 to_4tuple = _ntuple(4)
 to_ntuple = _ntuple
 
+
 class ConvResidualBlocks(nn.Module):
     """Conv and residual block used in BasicVSR.
 
@@ -298,12 +315,15 @@ class ConvResidualBlocks(nn.Module):
     def __init__(self, num_in_ch=3, num_out_ch=64, num_block=15):
         super().__init__()
         self.main = nn.Sequential(
-            nn.Conv2d(num_in_ch, num_out_ch, 3, 1, 1, bias=True), nn.LeakyReLU(negative_slope=0.1, inplace=True),
-            make_layer(ResidualBlockNoBN, num_block, num_feat=num_out_ch))
+            nn.Conv2d(num_in_ch, num_out_ch, 3, 1, 1, bias=True),
+            nn.LeakyReLU(negative_slope=0.1, inplace=True),
+            make_layer(ResidualBlockNoBN, num_block, num_feat=num_out_ch),
+        )
 
     def forward(self, fea):
         return self.main(fea)
-    
+
+
 class ResidualBlocks(nn.Module):
     """Residual block without shallow conv
 
@@ -320,28 +340,36 @@ class ResidualBlocks(nn.Module):
     def forward(self, fea):
         return self.main(fea)
 
+
 class Conv2dwithActication(nn.Module):
-    """ Conv2d layers with activation
-    """
+    """Conv2d layers with activation"""
+
     def __init__(self, num_in_ch, num_out_ch, num_layer=1):
         super().__init__()
-        main = [nn.Conv2d(num_in_ch, num_out_ch, 3, 1, 1, bias=True), nn.LeakyReLU(negative_slope=0.1, inplace=True)]
-        for _ in range(num_layer-1):
+        main = [
+            nn.Conv2d(num_in_ch, num_out_ch, 3, 1, 1, bias=True),
+            nn.LeakyReLU(negative_slope=0.1, inplace=True),
+        ]
+        for _ in range(num_layer - 1):
             main.append(nn.Conv2d(num_out_ch, num_out_ch, 3, 1, 1, bias=True))
             main.append(nn.LeakyReLU(negative_slope=0.1, inplace=True))
         self.main = nn.Sequential(*main)
-        
+
     def forward(self, fea):
         return self.main(fea)
+
 
 ##########################################################################
 ## LayerNorm
 
-def to_3d(x):
-    return rearrange(x, 'b c h w -> b (h w) c')
 
-def to_4d(x,h,w):
-    return rearrange(x, 'b (h w) c -> b c h w',h=h,w=w)
+def to_3d(x):
+    return rearrange(x, "b c h w -> b (h w) c")
+
+
+def to_4d(x, h, w):
+    return rearrange(x, "b (h w) c -> b c h w", h=h, w=w)
+
 
 class BiasFree_LayerNorm(nn.Module):
     def __init__(self, normalized_shape):
@@ -357,7 +385,8 @@ class BiasFree_LayerNorm(nn.Module):
 
     def forward(self, x):
         sigma = x.var(-1, keepdim=True, unbiased=False)
-        return x / torch.sqrt(sigma+1e-5) * self.weight
+        return x / torch.sqrt(sigma + 1e-5) * self.weight
+
 
 class WithBias_LayerNorm(nn.Module):
     def __init__(self, normalized_shape):
@@ -375,13 +404,13 @@ class WithBias_LayerNorm(nn.Module):
     def forward(self, x):
         mu = x.mean(-1, keepdim=True)
         sigma = x.var(-1, keepdim=True, unbiased=False)
-        return (x - mu) / torch.sqrt(sigma+1e-5) * self.weight + self.bias
+        return (x - mu) / torch.sqrt(sigma + 1e-5) * self.weight + self.bias
 
 
 class LayerNorm(nn.Module):
     def __init__(self, dim, LayerNorm_type):
         super(LayerNorm, self).__init__()
-        if LayerNorm_type =='BiasFree':
+        if LayerNorm_type == "BiasFree":
             self.body = BiasFree_LayerNorm(dim)
         else:
             self.body = WithBias_LayerNorm(dim)
@@ -399,92 +428,102 @@ class Attention(nn.Module):
         self.num_heads = num_heads
         self.temperature = nn.Parameter(torch.ones(num_heads, 1, 1))
 
-        self.kv = nn.Conv2d(dim_k, dim_k*2, kernel_size=1, bias=bias)
-        self.kv_dwconv = nn.Conv2d(dim_k*2, dim_k*2, kernel_size=3, stride=1, padding=1, groups=dim_k*2, bias=bias)
+        self.kv = nn.Conv2d(dim_k, dim_k * 2, kernel_size=1, bias=bias)
+        self.kv_dwconv = nn.Conv2d(
+            dim_k * 2,
+            dim_k * 2,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            groups=dim_k * 2,
+            bias=bias,
+        )
         self.q = nn.Conv2d(dim_q, dim_q, kernel_size=3, stride=1, padding=1, bias=bias)
         self.project_out = nn.Conv2d(dim_q, dim_q, kernel_size=1, bias=bias)
-        
-
 
     def forward(self, x, y):
-        b,c_kv,h,w = x.shape
+        b, c_kv, h, w = x.shape
 
         kv = self.kv_dwconv(self.kv(x))
-        k,v = kv.chunk(2, dim=1)
-        
+        k, v = kv.chunk(2, dim=1)
+
         # c_q = y.size(1)
         q = self.q(y)
-           
-        
-        q = rearrange(q, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
-        k = rearrange(k, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
-        v = rearrange(v, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
+
+        q = rearrange(q, "b (head c) h w -> b head c (h w)", head=self.num_heads)
+        k = rearrange(k, "b (head c) h w -> b head c (h w)", head=self.num_heads)
+        v = rearrange(v, "b (head c) h w -> b head c (h w)", head=self.num_heads)
 
         q = torch.nn.functional.normalize(q, dim=-1)
         k = torch.nn.functional.normalize(k, dim=-1)
 
-        attn = (q @ k.transpose(-2, -1)) * self.temperature # c_q, c_kv (64, 32)
+        attn = (q @ k.transpose(-2, -1)) * self.temperature  # c_q, c_kv (64, 32)
         attn = attn.softmax(dim=-1)
 
-        out = (attn @ v)
-        
-        out = rearrange(out, 'b head c (h w) -> b (head c) h w', head=self.num_heads, h=h, w=w)
+        out = attn @ v
 
-        out = self.project_out(out) # (b, 64, h, w)
+        out = rearrange(
+            out, "b head c (h w) -> b (head c) h w", head=self.num_heads, h=h, w=w
+        )
+
+        out = self.project_out(out)  # (b, 64, h, w)
         return out
 
 
 ##########################################################################
 # Attention block with layer norm
 class AttentionBlock(nn.Module):
-    def __init__(self, dim_q, dim_kv, num_heads, bias, LayerNorm_type=None, reduction='sum'):
+    def __init__(
+        self, dim_q, dim_kv, num_heads, bias, LayerNorm_type=None, reduction="sum"
+    ):
         super(AttentionBlock, self).__init__()
         if LayerNorm_type is not None:
             self.norm_q = LayerNorm(dim_q, LayerNorm_type)
             self.norm_kv = LayerNorm(dim_kv, LayerNorm_type)
         self.attn = Attention(dim_q, dim_kv, num_heads, bias)
-        if reduction == 'cat':
-            self.fusion = nn.Conv2d(dim_q*2, dim_q, kernel_size=1, bias=bias)
-    
+        if reduction == "cat":
+            self.fusion = nn.Conv2d(dim_q * 2, dim_q, kernel_size=1, bias=bias)
+
     def forward(self, x, y):
-        if hasattr(self, 'norm_kv'):
+        if hasattr(self, "norm_kv"):
             x = self.norm_kv(x)
-        if hasattr(self, 'norm_q'):
+        if hasattr(self, "norm_q"):
             y = self.norm_q(y)
-        
-        v = self.attn(x, y) ## ()
-        
-        if hasattr(self, 'fusion'):
+
+        v = self.attn(x, y)  ## ()
+
+        if hasattr(self, "fusion"):
             return self.fusion(torch.cat((y, v), dim=1))
         else:
             return y + v
-        
+
 
 ##########################################################################
 ## Simple attention function (parameter-free)
-    
+
+
 def cross_attention(x, ref):
-    b,c0,h,w = x.shape
-    _,c1,_,_ = ref.shape
-    q,k,v = x.clone(), ref.clone(), ref.clone()   
-    
-    q = rearrange(q, 'b (head c) h w -> b head c (h w)', head=1)
-    k = rearrange(k, 'b (head c) h w -> b head c (h w)', head=1)
-    v = rearrange(v, 'b (head c) h w -> b head c (h w)', head=1)
+    b, c0, h, w = x.shape
+    _, c1, _, _ = ref.shape
+    q, k, v = x.clone(), ref.clone(), ref.clone()
+
+    q = rearrange(q, "b (head c) h w -> b head c (h w)", head=1)
+    k = rearrange(k, "b (head c) h w -> b head c (h w)", head=1)
+    v = rearrange(v, "b (head c) h w -> b head c (h w)", head=1)
 
     q = torch.nn.functional.normalize(q, dim=-1)
     k = torch.nn.functional.normalize(k, dim=-1)
 
-    attn = (q @ k.transpose(-2, -1)) * 1 # self.temperature [c0, c1]
+    attn = (q @ k.transpose(-2, -1)) * 1  # self.temperature [c0, c1]
     max_, _ = torch.max(attn, dim=-1, keepdim=True)
     attn_submax = attn - max_
     attn = attn.softmax(dim=-1)
     attn = attn * torch.lt(attn_submax, 0).int()
     attn = attn.softmax(dim=-1)
 
-    out = (attn @ v) # [c0, hw]
-    
-    out = rearrange(out, 'b head c (h w) -> b (head c) h w', head=1, h=h, w=w)
+    out = attn @ v  # [c0, hw]
+
+    out = rearrange(out, "b head c (h w) -> b (head c) h w", head=1, h=h, w=w)
 
     # out = self.project_out(out)
     return out
@@ -498,52 +537,75 @@ class CrossChannelAttention(nn.Module):
         self.num_heads = num_heads
         self.temperature = nn.Parameter(torch.ones(num_heads, 1, 1))
 
-        self.kv = nn.Conv2d(dim_k, dim_k*2, kernel_size=1, bias=bias)
-        self.kv_dwconv = nn.Conv2d(dim_k*2, dim_k*2, kernel_size=3, stride=1, padding=1, groups=dim_k*2, bias=bias)
+        self.kv = nn.Conv2d(dim_k, dim_k * 2, kernel_size=1, bias=bias)
+        self.kv_dwconv = nn.Conv2d(
+            dim_k * 2,
+            dim_k * 2,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            groups=dim_k * 2,
+            bias=bias,
+        )
         self.q = nn.Conv2d(dim_q, dim_q, kernel_size=3, stride=1, padding=1, bias=bias)
         self.project_out = nn.Conv2d(dim_q, dim_q, kernel_size=1, bias=bias)
-        
+
     def forward(self, x, y, return_attn=False):
-        b,c_kv,h,w = x.shape
+        b, c_kv, h, w = x.shape
 
         kv = self.kv_dwconv(self.kv(y))
-        k,v = kv.chunk(2, dim=1)
-        
+        k, v = kv.chunk(2, dim=1)
+
         # c_q = y.size(1)
         q = self.q(x)
-           
-        q = rearrange(q, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
-        k = rearrange(k, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
-        v = rearrange(v, 'b (head c) h w -> b head c (h w)', head=self.num_heads)
-        
+
+        q = rearrange(q, "b (head c) h w -> b head c (h w)", head=self.num_heads)
+        k = rearrange(k, "b (head c) h w -> b head c (h w)", head=self.num_heads)
+        v = rearrange(v, "b (head c) h w -> b head c (h w)", head=self.num_heads)
+
         q = torch.nn.functional.normalize(q, dim=-1)
         k = torch.nn.functional.normalize(k, dim=-1)
 
         attn = (q @ k.transpose(-2, -1)) * self.temperature
-        
+
         attn = attn.softmax(dim=-1)
-        out = (attn @ v)
+        out = attn @ v
 
-        out = rearrange(out, 'b head c (h w) -> b (head c) h w', head=self.num_heads, h=h, w=w)
+        out = rearrange(
+            out, "b head c (h w) -> b (head c) h w", head=self.num_heads, h=h, w=w
+        )
 
-        out = self.project_out(out) # (b, 64, h, w)
+        out = self.project_out(out)  # (b, 64, h, w)
         if return_attn:
             return out, attn
         else:
             return out
-    
+
+
 ##########################################################################
 # Channel-wise Attention block with layer norm
 class ChannelAttentionBlock(nn.Module):
-    def __init__(self, dim_q, dim_kv, dim_out,num_heads, bias, LayerNorm_type=None, 
-                 reduction=True, ch_compress=False, squeeze_factor=1):
+    def __init__(
+        self,
+        dim_q,
+        dim_kv,
+        dim_out,
+        num_heads,
+        bias,
+        LayerNorm_type=None,
+        reduction=True,
+        ch_compress=False,
+        squeeze_factor=1,
+    ):
         super(ChannelAttentionBlock, self).__init__()
         self.ch_compress = ch_compress and (squeeze_factor > 1)
         if self.ch_compress:
             if LayerNorm_type is not None:
-                self.norm_q = LayerNorm(dim_q//squeeze_factor, LayerNorm_type)
-                self.norm_kv = LayerNorm(dim_kv//squeeze_factor, LayerNorm_type)
-            self.attn = CrossChannelAttention(dim_q//squeeze_factor, dim_kv//squeeze_factor, num_heads, bias)
+                self.norm_q = LayerNorm(dim_q // squeeze_factor, LayerNorm_type)
+                self.norm_kv = LayerNorm(dim_kv // squeeze_factor, LayerNorm_type)
+            self.attn = CrossChannelAttention(
+                dim_q // squeeze_factor, dim_kv // squeeze_factor, num_heads, bias
+            )
         else:
             if LayerNorm_type is not None:
                 self.norm_q = LayerNorm(dim_q, LayerNorm_type)
@@ -552,32 +614,62 @@ class ChannelAttentionBlock(nn.Module):
         self.reduction = reduction
         if reduction:
             self.norm_out = LayerNorm(dim_kv, LayerNorm_type)
-            self.ffn = nn.Sequential(nn.Conv2d(dim_kv+dim_q, dim_out, kernel_size=1, bias=bias),
-                                    nn.Conv2d(dim_out, dim_out, kernel_size=3, stride=1, padding=1, groups=dim_out, bias=bias),
-                                    nn.GELU(),
-                                    nn.Conv2d(dim_out, dim_out, kernel_size=1, bias=bias))
-        
+            self.ffn = nn.Sequential(
+                nn.Conv2d(dim_kv + dim_q, dim_out, kernel_size=1, bias=bias),
+                nn.Conv2d(
+                    dim_out,
+                    dim_out,
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    groups=dim_out,
+                    bias=bias,
+                ),
+                nn.GELU(),
+                nn.Conv2d(dim_out, dim_out, kernel_size=1, bias=bias),
+            )
+
         if self.ch_compress:
-            self.compress_q = nn.Conv2d(dim_q, dim_q//squeeze_factor, kernel_size=3, stride=1, padding=1, bias=bias)
-            self.compress_kv = nn.Conv2d(dim_kv, dim_kv//squeeze_factor, kernel_size=3, stride=1, padding=1, bias=bias)
-            self.expand = nn.Conv2d(dim_q//squeeze_factor, dim_q, kernel_size=3, stride=1, padding=1, bias=bias)
-    
+            self.compress_q = nn.Conv2d(
+                dim_q,
+                dim_q // squeeze_factor,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=bias,
+            )
+            self.compress_kv = nn.Conv2d(
+                dim_kv,
+                dim_kv // squeeze_factor,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=bias,
+            )
+            self.expand = nn.Conv2d(
+                dim_q // squeeze_factor,
+                dim_q,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=bias,
+            )
+
     def forward(self, x, y, return_attn=False):
-        
         if self.ch_compress:
             x_compressed = self.compress_q(x)
             y_compressed = self.compress_kv(y)
-            if hasattr(self, 'norm_kv'):
+            if hasattr(self, "norm_kv"):
                 y_compressed = self.norm_kv(y_compressed)
-            if hasattr(self, 'norm_q'):
+            if hasattr(self, "norm_q"):
                 x_compressed = self.norm_q(x_compressed)
             v = self.expand(self.attn(x_compressed, y_compressed, return_attn))
         else:
-            if hasattr(self, 'norm_kv'):
+            if hasattr(self, "norm_kv"):
                 y = self.norm_kv(y)
-            if hasattr(self, 'norm_q'):
+            if hasattr(self, "norm_q"):
                 x = self.norm_q(x)
-            v = self.attn(x, y, return_attn) ## ()
+            v = self.attn(x, y, return_attn)  ## ()
         if self.reduction:
-            out = self.ffn(torch.cat([x,self.norm_out(v)], dim=1))
+            out = self.ffn(torch.cat([x, self.norm_out(v)], dim=1))
         return out

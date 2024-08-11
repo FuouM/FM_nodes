@@ -567,7 +567,7 @@ class MambaFeature(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x1, x2):
-        B = x1.shape[0]
+        # B = x1.shape[0]
         x = torch.cat([x1, x2], 0)
 
         features = []
