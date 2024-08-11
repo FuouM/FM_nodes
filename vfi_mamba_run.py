@@ -3,7 +3,7 @@ from pathlib import Path
 import torch
 
 from .constants import VFI_MAMBA_DEFAULT, VFI_MAMBA_MODELS, VFI_MAMBA_PATHS
-from .vfimamba_module.vfi_mamba_model import run_vfi_mamba
+from .module_vfimamba.vfi_mamba_model import run_vfi_mamba
 
 base_dir = Path(__file__).resolve().parent
 
