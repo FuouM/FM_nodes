@@ -9,6 +9,8 @@ Click name to jump to workflow
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
 5. [**VFIMamba**](#vfimamba). Paper: [Video Frame Interpolation with State Space Models](https://github.com/MCG-NJU/VFIMamba)
 6. [**ConvIR**](#convir). Paper: [Revitalizing Convolutional Network for Image Restoration](https://github.com/c-yn/ConvIR)
+7. [**StabStitch**](#stabstitch). Paper: [Eliminating Warping Shakes for Unsupervised Online Video Stitching](https://github.com/nie-lang/StabStitch)
+
 
 ## Workflows
 
@@ -134,6 +136,15 @@ models\convir
     convir_rsblur.pkl
 ```
 
+### StabStitch
+
+Download all 3 models in the [Code - Pre-trained model](https://github.com/nie-lang/StabStitch?tab=readme-ov-file#pre-trained-model) section.
+
+```
+models/stabstitch/temporal_warp.pth
+models/stabstitch/spatial_warp.pth
+models/stabstitch/smooth_warp.pth
+```
 
 ## Credits
 
@@ -177,5 +188,14 @@ models\convir
   pages={6545--6564},
   year={2023},
   organization={PMLR}
+}
+```
+
+```
+@article{nie2024eliminating,
+  title={Eliminating Warping Shakes for Unsupervised Online Video Stitching},
+  author={Nie, Lang and Lin, Chunyu and Liao, Kang and Zhang, Yun and Liu, Shuaicheng and Zhao, Yao},
+  journal={arXiv preprint arXiv:2403.06378},
+  year={2024}
 }
 ```

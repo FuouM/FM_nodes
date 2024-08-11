@@ -12,11 +12,16 @@ import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
+from .module_stabstitch.stabstitch_model import stabstitch_inference
+
 from .module_colie.colie_model import CoLIE_Config, run_colie
 from .constants import (
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
+    STAB_SPATIAL_PATH,
+    STAB_TEMPORAL_PATH,
+    STAB_SMOOTH_PATH,
     WFEN_MODEL_PATH,
 )
 from .module_propih.propih_model import VGG19HRNetModel
@@ -283,3 +288,54 @@ class CoLIE_LowLight_Enhance:
             pbar.update_absolute(i, num_frames)
 
         return (torch.cat(result, dim=0),)
+
+
+class StabStitch:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "video_1": ("IMAGE",),
+                "video_2": ("IMAGE",),
+            },
+        }
+
+    RETURN_TYPES = (
+        "IMAGE",
+        "IMAGE",
+        "IMAGE",
+    )
+    RETURN_NAMES = (
+        "combined",
+        "stab",
+        "mask",
+    )
+    FUNCTION = "todo"
+    CATEGORY = "FM_nodes"
+
+    def todo(
+        self,
+        video_1: torch.Tensor,
+        video_2: torch.Tensor,
+    ):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        stable_list, video_frames_2, mask_frames_2 = stabstitch_inference(
+            video_1,
+            video_2,
+            spatial_path=f"{base_dir}/{STAB_SPATIAL_PATH}",
+            temporal_path=f"{base_dir}/{STAB_TEMPORAL_PATH}",
+            smooth_path=f"{base_dir}/{STAB_SMOOTH_PATH}",
+            device=device,
+        )
+
+        out_video = torch.cat(stable_list, dim=0).permute(0, 2, 3, 1)
+        out_mask = torch.cat(mask_frames_2, dim=0).permute(0, 2, 3, 1)
+        out_img2 = torch.cat(video_frames_2, dim=0)[:, [2, 1, 0], :, :].permute(
+            0, 2, 3, 1
+        )
+
+        return (
+            out_video,
+            out_img2,
+            out_mask,
+        )
