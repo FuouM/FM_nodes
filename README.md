@@ -9,6 +9,8 @@ Click name to jump to workflow
 4. [**CoLIE**](#colie). Paper: [Fast Context-Based Low-Light Image Enhancement via Neural Implicit Representations](https://github.com/ctom2/colie)
 5. [**VFIMamba**](#vfimamba). Paper: [Video Frame Interpolation with State Space Models](https://github.com/MCG-NJU/VFIMamba)
 6. [**ConvIR**](#convir). Paper: [Revitalizing Convolutional Network for Image Restoration](https://github.com/c-yn/ConvIR)
+7. [**StabStitch**](#stabstitch). Paper: [Eliminating Warping Shakes for Unsupervised Online Video Stitching](https://github.com/nie-lang/StabStitch)
+
 
 ## Workflows
 
@@ -26,7 +28,7 @@ Download the model [here](https://github.com/Yuehan717/RealViformer?tab=readme-o
 
 [workflow_realviformer.json](workflow/workflow_realviformer.json)
 
-![realviformer_example](example_realviformer.png)
+![realviformer_example](workflow_examples/example_realviformer.png)
 
 (Not a workflow-embedded image)
 
@@ -75,7 +77,7 @@ To install, `pip install [].whl`
 
 [workflow_vfi_mamba.json](workflow/workflow_vfi_mamba.json)
 
-![example_vfi_mamba](example_vfi_mamba.png)
+![example_vfi_mamba](workflow_examples/example_vfi_mamba.png)
 
 (Not a workflow-embedded image)
 
@@ -134,6 +136,24 @@ models\convir
     convir_rsblur.pkl
 ```
 
+### StabStitch
+
+Download all 3 models in the [Code - Pre-trained model](https://github.com/nie-lang/StabStitch?tab=readme-ov-file#pre-trained-model) section.
+
+```
+models/stabstitch/temporal_warp.pth
+models/stabstitch/spatial_warp.pth
+models/stabstitch/smooth_warp.pth
+```
+
+Use `interpolate_mode = NORMAL` or `do_linear_blend = True` to eliminate dark borders. Inputs will be resized to 360x480. Recommends using `StabStitch Crop Resize`.
+
+| StabStitch | StabStitch Stabilize |
+|-|-|
+| [stabstitch_stitch.json](workflow/stabstitch_stitch.json) (Example videos in `examples\stabstitch`) | [stabstich_stabilize.json](workflow/stabstitch_stabilize.json) |
+| ![example_stabstitch_stitch](workflow_examples/example_stabstitch_stitch.png) | ![example_stabstitch_stabilize](workflow_examples/example_stabstitch_stabilize.png) | 
+
+(Not workflow-embedded images)
 
 ## Credits
 
@@ -177,5 +197,14 @@ models\convir
   pages={6545--6564},
   year={2023},
   organization={PMLR}
+}
+```
+
+```
+@article{nie2024eliminating,
+  title={Eliminating Warping Shakes for Unsupervised Online Video Stitching},
+  author={Nie, Lang and Lin, Chunyu and Liao, Kang and Zhang, Yun and Liu, Shuaicheng and Zhao, Yao},
+  journal={arXiv preprint arXiv:2403.06378},
+  year={2024}
 }
 ```

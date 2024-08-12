@@ -2,7 +2,7 @@
 @author: Fuou Marinas
 @title: FM Nodes
 @nickname: FM_nodes
-@description: A collection of nodes. WFEN Face Super Resolution.
+@description: A collection of nodes.
 """
 
 from pathlib import Path
@@ -12,17 +12,17 @@ import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
-from .module_colie.colie_model import CoLIE_Config, run_colie
 from .constants import (
     PROPIH_G_MODEL_PATH,
     PROPIH_VGG_MODEL_PATH,
     REALVIFORMER_MODEL_PATH,
     WFEN_MODEL_PATH,
 )
+from .module_colie.colie_model import CoLIE_Config, run_colie
 from .module_propih.propih_model import VGG19HRNetModel
 from .module_realviformer.realviformer_arch import RealViformer
-from .utils import ensure_size, img_to_mask
 from .module_wfen.wfen_model import WFENModel
+from .utils import ensure_size, img_to_mask
 
 base_dir = Path(__file__).resolve().parent
 
