@@ -1,17 +1,20 @@
 from .run import (
     WFEN,
-    RealViFormerSR,
-    ProPIH_Harmonizer,
     CoLIE_LowLight_Enhance,
-    StabStitch,
+    ProPIH_Harmonizer,
+    RealViFormerSR,
 )
-
 from .run_convir import (
+    ConvIR_DefocusDeblur,
     ConvIR_DeHaze,
     ConvIR_DeRain,
     ConvIR_DeSnow,
     ConvIR_MotionDeBlur,
-    ConvIR_DefocusDeblur,
+)
+from .run_stabstitch import (
+    StabStitch_Crop_Resize,
+    StabStitch_Stabilize,
+    StabStitch_Stitch,
 )
 
 NODE_CLASS_MAPPINGS = {
@@ -24,7 +27,9 @@ NODE_CLASS_MAPPINGS = {
     "ConvIR_DeSnow": ConvIR_DeSnow,
     "ConvIR_MotionDeBlur": ConvIR_MotionDeBlur,
     "ConvIR_DefocusDeblur": ConvIR_DefocusDeblur,
-    "StabStitch": StabStitch,
+    "StabStitch": StabStitch_Stitch,
+    "StabStitch_Stabilize": StabStitch_Stabilize,
+    "StabStitch_Crop_Resize": StabStitch_Crop_Resize,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -38,6 +43,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ConvIR_MotionDeBlur": "ConvIR Motion DeBlur",
     "ConvIR_DefocusDeblur": "ConvIR Defocus Deblur",
     "StabStitch": "StabStitch",
+    "StabStitch_Stabilize": "StabStitch Stabilize",
+    "StabStitch_Crop_Resize": "StabStitch Crop Resize",
 }
 
 try:

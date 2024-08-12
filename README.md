@@ -28,7 +28,7 @@ Download the model [here](https://github.com/Yuehan717/RealViformer?tab=readme-o
 
 [workflow_realviformer.json](workflow/workflow_realviformer.json)
 
-![realviformer_example](example_realviformer.png)
+![realviformer_example](workflow_examples/example_realviformer.png)
 
 (Not a workflow-embedded image)
 
@@ -77,7 +77,7 @@ To install, `pip install [].whl`
 
 [workflow_vfi_mamba.json](workflow/workflow_vfi_mamba.json)
 
-![example_vfi_mamba](example_vfi_mamba.png)
+![example_vfi_mamba](workflow_examples/example_vfi_mamba.png)
 
 (Not a workflow-embedded image)
 
@@ -145,6 +145,13 @@ models/stabstitch/temporal_warp.pth
 models/stabstitch/spatial_warp.pth
 models/stabstitch/smooth_warp.pth
 ```
+
+| StabStitch | StabStitch Stabilize |
+|-|-|
+| [stabstitch_stitch.json](workflow/stabstitch_stitch.json) (Example videos in `examples\stabstitch`) | [stabstich_stabilize.json](workflow/stabstitch_stabilize.json) |
+| ![example_stabstitch_stitch](workflow_examples/example_stabstitch_stitch.png) | ![example_stabstitch_stabilize](workflow_examples/example_stabstitch_stabilize.png) | 
+
+(Not workflow-embedded images)
 
 ## Credits
 
