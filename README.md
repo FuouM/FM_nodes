@@ -146,6 +146,8 @@ models/stabstitch/spatial_warp.pth
 models/stabstitch/smooth_warp.pth
 ```
 
+Use `interpolate_mode = NORMAL` or `do_linear_blend = True` to eliminate dark borders. Inputs will be resized to 360x480. Recommends using `StabStitch Crop Resize`.
+
 | StabStitch | StabStitch Stabilize |
 |-|-|
 | [stabstitch_stitch.json](workflow/stabstitch_stitch.json) (Example videos in `examples\stabstitch`) | [stabstich_stabilize.json](workflow/stabstitch_stabilize.json) |
